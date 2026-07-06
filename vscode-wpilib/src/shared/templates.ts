@@ -39,7 +39,9 @@ export async function registerProjectTemplates(
     for (const e of templates) {
       const vendordeps: string[] = e.extravendordeps ?? [];
       const commandVersion: string = e.commandversion ? e.commandversion.toString() : '2';
-      if (commandVersion === '2') {
+      if (commandVersion === '3') {
+        vendordeps.push('commandsv2');
+      } else {
         vendordeps.push('commands2');
       }
       const provider: IExampleTemplateCreator = {

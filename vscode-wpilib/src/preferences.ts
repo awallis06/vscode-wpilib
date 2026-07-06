@@ -57,6 +57,7 @@ export class Preferences implements IPreferences {
   private configFileWatcher: vscode.FileSystemWatcher;
   private readonly preferencesGlob: string = '**/' + Preferences.preferenceFileName;
   private disposables: vscode.Disposable[] = [];
+  private isRobotPyProject: boolean = false;
   private isWPILibProject: boolean = false;
 
   private constructor(workspace: vscode.WorkspaceFolder) {
@@ -84,6 +85,21 @@ export class Preferences implements IPreferences {
     this.configFileWatcher.onDidChange(async () => {
       await this.updatePreferences();
     });
+  }
+
+  public getIsRobotPyProject(): boolean {
+    // If we already know, return it
+    if (this.isRobotPyProject) {
+      return true;
+    }
+
+    const configFilePath = path.join(this.workspace.uri.fsPath, 'pyproject.toml');
+    // If the project has a pyproject.toml file, update isRobotPyProject to true
+    if (fs.existsSync(configFilePath)) {
+      this.isRobotPyProject = true;
+    }
+
+    return this.isRobotPyProject;
   }
 
   public getIsWPILibProject(): boolean {

@@ -149,7 +149,7 @@ export class DependencyViewProvider implements vscode.WebviewViewProvider {
       console.log(item.name.concat(' / ', item.version))
     );
 
-    if (prefs.getCurrentLanguage() === 'python')
+    if (prefs.getIsRobotPyProject())
       webviewView.webview.html = this._getPythonHtmlForWebview(webviewView.webview);
     else webviewView.webview.html = this._getHtmlForWebview(webviewView.webview);
 
@@ -218,10 +218,7 @@ export class DependencyViewProvider implements vscode.WebviewViewProvider {
           versionToInstall === available.version &&
           this.installedList[index].name === available.name
       );
-      if (
-        this.externalApi.getPreferencesAPI().getPreferences(this.wp).getCurrentLanguage() ===
-        'python'
-      ) {
+      if (this.externalApi.getPreferencesAPI().getPreferences(this.wp).getIsRobotPyProject()) {
         await this.vendorLibraries.updateVersion(
           await parseRequirement(this.installedList[index].name),
           version,
@@ -234,41 +231,33 @@ export class DependencyViewProvider implements vscode.WebviewViewProvider {
 
   private async updateall() {
     if (this.wp) {
-      if (
-        this.externalApi.getPreferencesAPI().getPreferences(this.wp).getCurrentLanguage() ===
-        'python'
-      ) {
         for (const installed of this.installedList) {
           if (installed.versionInfo[0].version !== installed.currentVersion && this.wp) {
             // Match both the name and the version
-            const avail = (await this.getAvailablePythonDependencies()).find(
-              (available) => installed.name === available.python
-            );
-            if (avail && avail.python) {
-              await this.vendorLibraries.updateVersion(
-                await parseRequirement(avail.python),
-                installed.versionInfo[0].version,
-                this.wp
+            if(this.externalApi.getPreferencesAPI().getPreferences(this.wp).getIsRobotPyProject()) {
+              const avail = (await this.getAvailablePythonDependencies()).find(
+                (available) => installed.name === available.python
               );
-              break;
+              if (avail && avail.python) {
+                await this.vendorLibraries.updateVersion(
+                  await parseRequirement(avail.python),
+                  installed.versionInfo[0].version,
+                  this.wp
+                );
+                break;
+              }
+            } else {
+              const avail = this.availableDeps.find(
+                (available) =>
+                  installed.versionInfo[0].version === available.version &&
+                  installed.name === available.name
+              );
+              await this.getURLInstallDep(avail);
             }
           }
         }
-      } else {
-        for (const installed of this.installedList) {
-          if (installed.versionInfo[0].version !== installed.currentVersion && this.wp) {
-            // Match both the name and the version
-            const avail = this.availableDeps.find(
-              (available) =>
-                installed.versionInfo[0].version === available.version &&
-                installed.name === available.name
-            );
-            await this.getURLInstallDep(avail);
-          }
-        }
-      }
       await this._refresh(this.wp);
-    }
+    } 
   }
 
   private async install(index: string) {
@@ -296,7 +285,7 @@ export class DependencyViewProvider implements vscode.WebviewViewProvider {
   private async uninstall(index: string) {
     if (
       this.wp &&
-      this.externalApi.getPreferencesAPI().getPreferences(this.wp).getCurrentLanguage() !== 'python'
+      !this.externalApi.getPreferencesAPI().getPreferences(this.wp).getIsRobotPyProject()
     ) {
       this.sortInstalledDeps();
       const uninstall = [this.installedDeps[parseInt(index, 10)]];
@@ -415,7 +404,7 @@ export class DependencyViewProvider implements vscode.WebviewViewProvider {
     }
 
     if (
-      this.externalApi.getPreferencesAPI().getPreferences(this.wp).getCurrentLanguage() === 'python'
+      this.externalApi.getPreferencesAPI().getPreferences(this.wp).getIsRobotPyProject()
     ) {
       if (isComponent(url)) {
         await addPythonDep([url], [], this.wp.uri.fsPath);
@@ -565,29 +554,21 @@ export class DependencyViewProvider implements vscode.WebviewViewProvider {
     this.refreshInProgress = true;
 
     try {
-      if (
-        this.externalApi.getPreferencesAPI().getPreferences(workspace).getCurrentLanguage() ===
-        'python'
-      ) {
+      if (this.externalApi.getPreferencesAPI().getPreferences(workspace).getIsRobotPyProject()) {
         await this.vendorLibraries.syncRequirements(workspace);
         this.installedPythonDeps =
           await this.vendorLibraries.getCurrentlyInstalledPythonLibraries(workspace);
-      } else
+          this.availableDeps = await this.getAvailablePythonDependencies();
+      } else {
         this.installedDeps = await this.vendorLibraries.getCurrentlyInstalledLibraries(workspace);
+        this.availableDeps = await this.getAvailableDependencies();
+
+      }
       this.installedList = [];
       this.availableDepsList = [];
       if (
-        this.externalApi.getPreferencesAPI().getPreferences(workspace).getCurrentLanguage() ===
-        'python'
-      ) {
-        this.availableDeps = await this.getAvailablePythonDependencies();
-      } else {
-        this.availableDeps = await this.getAvailableDependencies();
-      }
-      if (
         this.availableDeps.length !== 0 &&
-        this.externalApi.getPreferencesAPI().getPreferences(workspace).getCurrentLanguage() !==
-          'python'
+        !this.externalApi.getPreferencesAPI().getPreferences(workspace).getIsRobotPyProject()
       ) {
         // Check Github for the VendorDep list
         for (const id of this.installedDeps) {

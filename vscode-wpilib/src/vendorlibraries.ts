@@ -179,10 +179,7 @@ export class VendorLibraries {
   }
 
   private async manageCurrentLibraries(workspace: vscode.WorkspaceFolder): Promise<void> {
-    if (
-      this.externalApi.getPreferencesAPI().getPreferences(workspace).getCurrentLanguage() ===
-      'python'
-    ) {
+    if (this.externalApi.getPreferencesAPI().getPreferences(workspace).getIsRobotPyProject()) {
       const installedDeps = await this.getCurrentlyInstalledPythonLibraries(workspace);
       const deps: string[] = [];
 
@@ -486,10 +483,7 @@ export class VendorLibraries {
   }
 
   private async offlineUpdates(workspace: vscode.WorkspaceFolder): Promise<void> {
-    if (
-      this.externalApi.getPreferencesAPI().getPreferences(workspace).getCurrentLanguage() ===
-      'python'
-    ) {
+    if (this.externalApi.getPreferencesAPI().getPreferences(workspace).getIsRobotPyProject()) {
       const installedDeps = await this.getCurrentlyInstalledPythonLibraries(workspace);
       if (installedDeps.length !== 0) {
         const updatableDeps: LibraryQuickPickPy[] = [];
@@ -603,10 +597,7 @@ export class VendorLibraries {
   }
 
   private async onlineUpdates(workspace: vscode.WorkspaceFolder): Promise<void> {
-    if (
-      this.externalApi.getPreferencesAPI().getPreferences(workspace).getCurrentLanguage() ===
-      'python'
-    ) {
+    if (this.externalApi.getPreferencesAPI().getPreferences(workspace).getIsRobotPyProject()) {
       const installedDeps = await this.getCurrentlyInstalledPythonLibraries(workspace);
       const availableUpdates: LibraryQuickPickPy[] = [];
       for (const d of installedDeps) {
@@ -721,10 +712,7 @@ export class VendorLibraries {
   }
 
   private async offlineNew(workspace: vscode.WorkspaceFolder): Promise<void> {
-    if (
-      this.externalApi.getPreferencesAPI().getPreferences(workspace).getCurrentLanguage() ===
-      'python'
-    ) {
+    if (this.externalApi.getPreferencesAPI().getPreferences(workspace).getIsRobotPyProject()) {
       const oldProject = await vscode.window.showOpenDialog({
         canSelectFiles: true,
         canSelectFolders: false,
@@ -830,10 +818,7 @@ export class VendorLibraries {
   }
 
   private async onlineNew(workspace: vscode.WorkspaceFolder): Promise<void> {
-    if (
-      this.externalApi.getPreferencesAPI().getPreferences(workspace).getCurrentLanguage() ===
-      'python'
-    ) {
+    if (this.externalApi.getPreferencesAPI().getPreferences(workspace).getIsRobotPyProject()) {
       const result = await vscode.window.showInputBox({
         ignoreFocusOut: true,
         placeHolder: i18n(
@@ -897,10 +882,7 @@ export class VendorLibraries {
   }
 
   public async offerBuild(workspace: vscode.WorkspaceFolder, modal = false): Promise<boolean> {
-    if (
-      this.externalApi.getPreferencesAPI().getPreferences(workspace).getCurrentLanguage() ===
-      'python'
-    )
+    if (this.externalApi.getPreferencesAPI().getPreferences(workspace).getIsRobotPyProject())
       return false;
     const buildRes = await vscode.window.showInformationMessage(
       i18n(
@@ -923,10 +905,7 @@ export class VendorLibraries {
   }
 
   public async offerSync(workspace: vscode.WorkspaceFolder, modal = false): Promise<boolean> {
-    if (
-      this.externalApi.getPreferencesAPI().getPreferences(workspace).getCurrentLanguage() !==
-      'python'
-    )
+    if (!this.externalApi.getPreferencesAPI().getPreferences(workspace).getIsRobotPyProject())
       return false;
     const buildRes = await vscode.window.showInformationMessage(
       i18n(

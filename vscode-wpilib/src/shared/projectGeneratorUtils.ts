@@ -27,9 +27,6 @@ export const VendorDepFiles = {
   XRP: 'XRPVendordep.json',
   COMMANDSV3: 'CommandsV3.json',
   COMMANDSV2_OLD: 'WPILibNewCommands.json',
-  APRILTAG: 'apriltag.json',
-  CSCORE: 'cscore.json',
-  SIM: 'sim.json',
 };
 
 /**

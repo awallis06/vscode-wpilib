@@ -138,7 +138,7 @@ export function createVsCommands(context: vscode.ExtensionContext, externalApi: 
         return;
       } else if (
         !workspace ||
-        preferencesApi.getPreferences(workspace).getCurrentLanguage() === 'python'
+        preferencesApi.getPreferences(workspace).getIsRobotPyProject()
       ) {
         vscode.window.showInformationMessage(
           i18n(
@@ -161,7 +161,7 @@ export function createVsCommands(context: vscode.ExtensionContext, externalApi: 
           i18n('message', 'Cannot sync robot code since this is not a WPILib project')
         );
         return;
-      } else if (preferencesApi.getPreferences(workspace).getCurrentLanguage() !== 'python') {
+      } else if (!preferencesApi.getPreferences(workspace).getIsRobotPyProject()) {
         vscode.window.showInformationMessage(
           i18n('message', 'Cannot sync robot code since this is not a robotpy project')
         );
