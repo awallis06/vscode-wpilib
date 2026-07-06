@@ -200,8 +200,7 @@ export class Gradle2025Import extends WebViewBase {
       } else if (wpilibJsonFileParsed.currentLanguage === 'java') {
         language = 'java';
       } else if (
-        wpilibJsonFileParsed.currentLanguage === 'python' ||
-        (await readFile(path.join(oldProjectPath, 'pyproject.toml')))
+        wpilibJsonFileParsed.currentLanguage === 'python' || fs.existsSync(path.join(oldProjectPath, 'pyproject.toml'))
       ) {
         language = 'python';
       } else {
@@ -372,12 +371,7 @@ export class Gradle2025Import extends WebViewBase {
     parsed.teamNumber = parseInt(data.teamNumber, 10);
     await writeFile(jsonFilePath, JSON.stringify(parsed, null, 4));
 
-    let replacementFile = path.join(resourceRoot, 'java_replacements.json');
-    if (language === 'cpp') {
-      replacementFile = path.join(resourceRoot, 'cpp_replacements.json');
-    } else if (language === 'python') {
-      replacementFile = path.join(resourceRoot, 'python_replacements.json');
-    }
+    let replacementFile = path.join(resourceRoot, `${language}_replacements.json`);
     await ImportUpdate(toFolder, replacementFile);
 
     await promptForProjectOpen(vscode.Uri.file(toFolder));
