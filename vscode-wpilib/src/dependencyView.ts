@@ -231,33 +231,33 @@ export class DependencyViewProvider implements vscode.WebviewViewProvider {
 
   private async updateall() {
     if (this.wp) {
-        for (const installed of this.installedList) {
-          if (installed.versionInfo[0].version !== installed.currentVersion && this.wp) {
-            // Match both the name and the version
-            if(this.externalApi.getPreferencesAPI().getPreferences(this.wp).getIsRobotPyProject()) {
-              const avail = (await this.getAvailablePythonDependencies()).find(
-                (available) => installed.name === available.python
+      for (const installed of this.installedList) {
+        if (installed.versionInfo[0].version !== installed.currentVersion) {
+          // Match both the name and the version
+          if (this.externalApi.getPreferencesAPI().getPreferences(this.wp).getIsRobotPyProject()) {
+            const avail = (await this.getAvailablePythonDependencies()).find(
+              (available) => installed.name === available.python
+            );
+            if (avail && avail.python) {
+              await this.vendorLibraries.updateVersion(
+                await parseRequirement(avail.python),
+                installed.versionInfo[0].version,
+                this.wp
               );
-              if (avail && avail.python) {
-                await this.vendorLibraries.updateVersion(
-                  await parseRequirement(avail.python),
-                  installed.versionInfo[0].version,
-                  this.wp
-                );
-                break;
-              }
-            } else {
-              const avail = this.availableDeps.find(
-                (available) =>
-                  installed.versionInfo[0].version === available.version &&
-                  installed.name === available.name
-              );
-              await this.getURLInstallDep(avail);
+              break;
             }
+          } else {
+            const avail = this.availableDeps.find(
+              (available) =>
+                installed.versionInfo[0].version === available.version &&
+                installed.name === available.name
+            );
+            await this.getURLInstallDep(avail);
           }
         }
+      }
       await this._refresh(this.wp);
-    } 
+    }
   }
 
   private async install(index: string) {
@@ -403,9 +403,7 @@ export class DependencyViewProvider implements vscode.WebviewViewProvider {
       return;
     }
 
-    if (
-      this.externalApi.getPreferencesAPI().getPreferences(this.wp).getIsRobotPyProject()
-    ) {
+    if (this.externalApi.getPreferencesAPI().getPreferences(this.wp).getIsRobotPyProject()) {
       if (isComponent(url)) {
         await addPythonDep([url], [], this.wp.uri.fsPath);
         return;
@@ -558,11 +556,10 @@ export class DependencyViewProvider implements vscode.WebviewViewProvider {
         await this.vendorLibraries.syncRequirements(workspace);
         this.installedPythonDeps =
           await this.vendorLibraries.getCurrentlyInstalledPythonLibraries(workspace);
-          this.availableDeps = await this.getAvailablePythonDependencies();
+        this.availableDeps = await this.getAvailablePythonDependencies();
       } else {
         this.installedDeps = await this.vendorLibraries.getCurrentlyInstalledLibraries(workspace);
         this.availableDeps = await this.getAvailableDependencies();
-
       }
       this.installedList = [];
       this.availableDepsList = [];

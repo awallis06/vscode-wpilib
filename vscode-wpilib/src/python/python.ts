@@ -67,8 +67,7 @@ export async function activatePython(context: vscode.ExtensionContext, coreExpor
       cp.execSync(installCmd);
     }
   }
-  if (wp && preferences.getPreferences(wp).getIsRobotPyProject())
-    await setupVenv(executeApi, wp);
+  if (wp && preferences.getPreferences(wp).getIsRobotPyProject()) await setupVenv(executeApi, wp);
 
   //Setup build and test
   registerCodeBuilderAndTester(coreExports);

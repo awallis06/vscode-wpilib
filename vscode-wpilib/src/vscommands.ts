@@ -136,10 +136,7 @@ export function createVsCommands(context: vscode.ExtensionContext, externalApi: 
           i18n('message', 'Cannot build robot code since this is not a WPILib project')
         );
         return;
-      } else if (
-        !workspace ||
-        preferencesApi.getPreferences(workspace).getIsRobotPyProject()
-      ) {
+      } else if (!workspace || preferencesApi.getPreferences(workspace).getIsRobotPyProject()) {
         vscode.window.showInformationMessage(
           i18n(
             'message',
