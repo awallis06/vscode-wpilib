@@ -90,7 +90,7 @@ export async function generateCopyPython(
       await genUtils.updateRobotPyVersion(path.join(toFolder, 'pyproject.toml'), robotpyVersion);
     }
 
-    await genUtils.setupComponentsPy(vendordeps, toFolder);
+    await genUtils.setupComponents(vendordeps, toFolder);
 
     return true;
   } catch (e) {

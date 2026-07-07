@@ -42,7 +42,7 @@ export async function registerExamples(
       if (commandVersion === '3') {
         vendordeps.push('commandsv3');
       } else {
-        vendordeps.push('commands2');
+        vendordeps.push('commandsv2');
       }
       const provider: IExampleTemplateCreator = {
         getLanguage(): string {

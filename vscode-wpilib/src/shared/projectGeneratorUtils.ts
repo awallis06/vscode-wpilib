@@ -29,6 +29,17 @@ export const VendorDepFiles = {
   COMMANDSV2_OLD: 'WPILibNewCommands.json',
 };
 
+export const ComponentPackages = {
+  APRILTAG: 'apriltag',
+  COMMANDSV2: 'commands2',
+  CSCORE: 'cscore',
+  ROMI: 'romi',
+  SIM: 'sim',
+  XRP: 'xrp',
+}
+
+export const allComponents = ['all', 'apriltag', 'commands2', 'cscore', 'romi', 'sim', 'xrp']
+
 /**
  * Filter function for excluding files from gradle copy operations
  */
@@ -121,27 +132,27 @@ export async function updateRobotPyVersion(
   }
 }
 
-export async function setupComponentsPy(vendors: string[], toFolder: string) {
+export async function setupComponents(vendors: string[], toFolder: string) {
   let components: string[] = [];
   for (const v of vendors) {
-    if (v === 'commands2') components.push('commands2');
-    else if (v === 'apriltag') components.push('apriltag');
-    else if (v === 'cscore') components.push('cscore');
-    else if (v === 'romi') components.push('romi');
-    else if (v === 'sim') components.push('sim');
-    else if (v === 'xrp') components.push('xrp');
+    if (v === 'commandsv2') components.push(ComponentPackages.COMMANDSV2);
+    else if (v === 'apriltag') components.push(ComponentPackages.APRILTAG);
+    else if (v === 'cscore') components.push(ComponentPackages.CSCORE);
+    else if (v === 'romi') components.push(ComponentPackages.ROMI);
+    else if (v === 'sim') components.push(ComponentPackages.SIM);
+    else if (v === 'xrp') components.push(ComponentPackages.XRP);
   }
   pathUtils.copyComponets(components, toFolder);
 }
 
 export function isComponent(pkg: string) {
   let component = false;
-  if (pkg === 'apriltag') component = true;
-  else if (pkg === 'commands2') component = true;
-  else if (pkg === 'cscore') component = true;
-  else if (pkg === 'romi') component = true;
-  else if (pkg === 'sim') component = true;
-  else if (pkg === 'xrp') component = true;
+  if (pkg === ComponentPackages.APRILTAG) component = true;
+  else if (pkg === ComponentPackages.COMMANDSV2) component = true;
+  else if (pkg === ComponentPackages.CSCORE) component = true;
+  else if (pkg === ComponentPackages.ROMI) component = true;
+  else if (pkg === ComponentPackages.SIM) component = true;
+  else if (pkg === ComponentPackages.XRP) component = true;
   return component;
 }
 

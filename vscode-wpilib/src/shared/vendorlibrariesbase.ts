@@ -1,6 +1,7 @@
 'use strict';
 
 import { access, mkdir, readdir, readFile, unlink, writeFile } from 'fs/promises';
+import { allComponents } from './projectGeneratorUtils';
 import * as path from 'path';
 import { logger } from '../logger';
 import { getWPILibHomeDir, getWPILibYear } from './utilitiesapi';
@@ -157,12 +158,12 @@ export async function addPythonDep(
   try {
     const dir = path.join(workspace, 'pyproject.toml');
     let file = (await readFile(dir)).toString();
-    const allComponents = ['all', 'apriltag', 'commands2', 'cscore', 'romi', 'sim', 'xrp'];
+    const componentPackages = allComponents;
     const installedComponents = await getComponents(workspace);
     const installedRequirements = await getVendorPackageNames(workspace);
     let toAdd = 'components = [';
     let added = false;
-    for (const a of allComponents) {
+    for (const a of componentPackages) {
       added = false;
       for (const c of components) {
         if (c === a) {

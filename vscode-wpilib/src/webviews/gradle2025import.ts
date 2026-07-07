@@ -293,8 +293,7 @@ export class Gradle2025Import extends WebViewBase {
     const vendordeps: string[] = data.romi ? ['romi'] : data.xrp ? ['xrp'] : [];
 
     if (fs.existsSync(commandsV2JsonPath)) {
-      if (language === 'python') vendordeps.push('commands2');
-      else vendordeps.push('commandsv2');
+      vendordeps.push('commandsv2');
     } else if (fs.existsSync(commandsV2OldJsonPath)) {
       vendordeps.push('commandsv2');
     } else if (fs.existsSync(commandsV3JsonPath)) {

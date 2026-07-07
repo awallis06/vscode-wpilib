@@ -3,6 +3,7 @@
 import { copyFile, readFile, readdir, writeFile } from 'fs/promises';
 import * as path from 'path';
 import { logger } from '../logger';
+import { allComponents } from './projectGeneratorUtils';
 
 /**
  * Creates source and test paths based on project type and import mode
@@ -59,10 +60,10 @@ export async function copyComponets(components: string[], targetDir: string) {
   try {
     const dir = path.join(targetDir, 'pyproject.toml');
     let file = (await readFile(dir)).toString();
-    const allComponents = ['all', 'apriltag', 'commands2', 'cscore', 'romi', 'sim', 'xrp'];
+    const componentPackages = allComponents;
     let toAdd = 'components = [';
     let added = false;
-    for (const a of allComponents) {
+    for (const a of componentPackages) {
       added = false;
       for (const c of components) {
         if (c === a) {
