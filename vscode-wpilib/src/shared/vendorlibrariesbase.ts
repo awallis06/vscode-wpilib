@@ -6,7 +6,7 @@ import * as path from 'path';
 import { logger } from '../logger';
 import { getWPILibHomeDir, getWPILibYear } from './utilitiesapi';
 import * as cp from 'child_process';
-import * as TOML from 'smol-toml';
+import * as TOML from 'toml';
 import * as vscode from 'vscode';
 import { IExecuteAPI } from '../api';
 
