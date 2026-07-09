@@ -433,9 +433,16 @@ export function createVsCommands(context: vscode.ExtensionContext, externalApi: 
           }
         }
       } else if (pick === 'Python') {
-        vscode.window.showErrorMessage(
-          'Cannot download or access Python API Documentation, RobotPy Docs are available at this link: https://robotpy.readthedocs.io/en/stable/'
-        );
+        const indexFile = path.join(homeDir, 'documentation', 'python', 'mostrobotpy', 'index.html');
+        try {
+          await access(indexFile);
+          await vscode.env.openExternal(vscode.Uri.file(indexFile));
+          return;
+        } catch {
+          vscode.window.showErrorMessage(
+            'Cannot download or access Python API Documentation, RobotPy Docs are available at this link: https://robotpy.readthedocs.io/en/stable/'
+          );
+        }
       }
     })
   );
