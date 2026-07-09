@@ -36,9 +36,9 @@ export const ComponentPackages = {
   ROMI: 'romi',
   SIM: 'sim',
   XRP: 'xrp',
-}
+};
 
-export const allComponents = ['all', 'apriltag', 'commands2', 'cscore', 'romi', 'sim', 'xrp']
+export const allComponents = ['all', 'apriltag', 'commands2', 'cscore', 'romi', 'sim', 'xrp'];
 
 /**
  * Filter function for excluding files from gradle copy operations

@@ -433,7 +433,13 @@ export function createVsCommands(context: vscode.ExtensionContext, externalApi: 
           }
         }
       } else if (pick === 'Python') {
-        const indexFile = path.join(homeDir, 'documentation', 'python', 'mostrobotpy', 'index.html');
+        const indexFile = path.join(
+          homeDir,
+          'documentation',
+          'python',
+          'mostrobotpy',
+          'index.html'
+        );
         try {
           await access(indexFile);
           await vscode.env.openExternal(vscode.Uri.file(indexFile));

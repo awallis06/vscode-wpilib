@@ -200,7 +200,8 @@ export class Gradle2025Import extends WebViewBase {
       } else if (wpilibJsonFileParsed.currentLanguage === 'java') {
         language = 'java';
       } else if (
-        wpilibJsonFileParsed.currentLanguage === 'python' || fs.existsSync(path.join(oldProjectPath, 'pyproject.toml'))
+        wpilibJsonFileParsed.currentLanguage === 'python' ||
+        fs.existsSync(path.join(oldProjectPath, 'pyproject.toml'))
       ) {
         language = 'python';
       } else {

@@ -37,12 +37,12 @@ export async function activatePython(context: vscode.ExtensionContext, coreExpor
     );
     allowDebug = false;
   }
-  
-  if (wp && preferences.getPreferences(wp).getIsRobotPyProject()) {  
+
+  if (wp && preferences.getPreferences(wp).getIsRobotPyProject()) {
     let cmd = 'uv pip list | findstr robotpy';
     let robotpyInstalled = false;
     try {
-      let result = cp.execSync(cmd, {encoding: 'utf8'});
+      let result = cp.execSync(cmd, { encoding: 'utf8' });
       if (result.indexOf('robotpy') !== -1) {
         robotpyInstalled = true;
       }
@@ -69,7 +69,7 @@ export async function activatePython(context: vscode.ExtensionContext, coreExpor
       }
     }
     await setupVenv(executeApi, wp);
-  } 
+  }
 
   //Setup build and test
   registerCodeBuilderAndTester(coreExports);

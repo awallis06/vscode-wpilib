@@ -40,7 +40,7 @@ export async function registerProjectTemplates(
       const vendordeps: string[] = e.extravendordeps ?? [];
       const commandVersion: string = e.commandversion ? e.commandversion.toString() : '2';
       if (commandVersion === '3') {
-        vendordeps.push('commandsv2');
+        vendordeps.push('commandsv3');
       } else {
         vendordeps.push('commandsv2');
       }
