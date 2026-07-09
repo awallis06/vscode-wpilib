@@ -37,37 +37,39 @@ export async function activatePython(context: vscode.ExtensionContext, coreExpor
     );
     allowDebug = false;
   }
-  let cmd = 'pip show robotpy';
-  let robotpyInstalled = false;
-  if (getIsWindows()) cmd = 'py -3 -m ' + cmd;
-  try {
-    let result = cp.execSync(cmd);
-    if (result.indexOf('not found: robotpy') === -1) {
-      robotpyInstalled = true;
+  
+  if (wp && preferences.getPreferences(wp).getIsRobotPyProject()) {  
+    let cmd = 'uv pip list | findstr robotpy';
+    let robotpyInstalled = false;
+    try {
+      let result = cp.execSync(cmd, {encoding: 'utf8'});
+      if (result.indexOf('robotpy') !== -1) {
+        robotpyInstalled = true;
+      }
+    } catch (err) {
+      robotpyInstalled = false;
     }
-  } catch (err) {
-    robotpyInstalled = false;
-  }
-  if (!robotpyInstalled) {
-    const installReq = await vscode.window.showWarningMessage(
-      i18n(
-        'message',
-        'Robotpy is not installed, if you would like to use the robotpy tools, ' +
-          'you need to install robotpy. Would you like to install robotpy now?'
-      ),
-      {
-        modal: true,
-      },
-      { title: i18n('ui', 'Yes') },
-      { title: i18n('ui', 'No'), isCloseAffordance: true }
-    );
-    if (installReq?.title === i18n('ui', 'Yes')) {
-      let installCmd = 'pip install --user robotpy';
-      if (getIsWindows()) installCmd = 'py -3 -m ' + installCmd;
-      cp.execSync(installCmd);
+    if (!robotpyInstalled) {
+      const installReq = await vscode.window.showWarningMessage(
+        i18n(
+          'message',
+          'Robotpy is not installed, if you would like to use the robotpy tools, ' +
+            'you need to install robotpy. Would you like to install robotpy now?'
+        ),
+        {
+          modal: true,
+        },
+        { title: i18n('ui', 'Yes') },
+        { title: i18n('ui', 'No'), isCloseAffordance: true }
+      );
+      if (installReq?.title === i18n('ui', 'Yes')) {
+        let installCmd = 'pip install --user robotpy';
+        if (getIsWindows()) installCmd = 'py -3 -m ' + installCmd;
+        cp.execSync(installCmd);
+      }
     }
-  }
-  if (wp && preferences.getPreferences(wp).getIsRobotPyProject()) await setupVenv(executeApi, wp);
+    await setupVenv(executeApi, wp);
+  } 
 
   //Setup build and test
   registerCodeBuilderAndTester(coreExports);
