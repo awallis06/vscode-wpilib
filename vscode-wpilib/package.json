@@ -384,12 +384,12 @@
                     "group": "wpilib@1"
                 },
                 {
-                    "when": "isWPILibProject",
+                    "when": "isWPILibProject && !isRobotPyProject",
                     "command": "wpilibcore.buildCode",
                     "group": "wpilib@2"
                 },
                 {
-                    "when": "isWPILibProject",
+                    "when": "isWPILibProject && isRobotPyProject" ,
                     "command": "wpilibcore.syncCode",
                     "group": "wpilib@2"
                 },
