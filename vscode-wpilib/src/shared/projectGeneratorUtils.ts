@@ -146,14 +146,7 @@ export async function setupComponents(vendors: string[], toFolder: string) {
 }
 
 export function isComponent(pkg: string) {
-  let component = false;
-  if (pkg === ComponentPackages.APRILTAG) component = true;
-  else if (pkg === ComponentPackages.COMMANDSV2) component = true;
-  else if (pkg === ComponentPackages.CSCORE) component = true;
-  else if (pkg === ComponentPackages.ROMI) component = true;
-  else if (pkg === ComponentPackages.SIM) component = true;
-  else if (pkg === ComponentPackages.XRP) component = true;
-  return component;
+  return allComponents.includes(pkg);
 }
 
 /**

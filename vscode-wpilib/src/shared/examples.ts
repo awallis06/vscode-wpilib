@@ -28,9 +28,7 @@ export async function registerExamples(
   core: IExampleTemplateAPI
 ) {
   let examplesFolder = path.join(resourceRoot, 'src', 'examples');
-  if (language === 'python') examplesFolder = path.join(resourceRoot, 'examples');
   let examplesTestFolder = path.join(resourceRoot, 'src', 'examples_test');
-  if (language === 'python') examplesTestFolder = path.join(resourceRoot, 'examples_test');
   const resourceFile = path.join(examplesFolder, exampleResourceName);
   const gradleBasePath = path.join(path.dirname(resourceRoot), 'gradle');
   try {

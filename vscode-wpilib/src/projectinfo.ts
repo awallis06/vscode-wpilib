@@ -141,7 +141,7 @@ Vendor Libraries:
     if (!currentGradleVersion) {
       currentGradleVersion = 'unknown';
       if (prefs.getIsRobotPyProject()) {
-        currentGradleVersion = (await getRobotPyVersion(workspace.uri.fsPath)) as string;
+        currentGradleVersion = await getRobotPyVersion(workspace.uri.fsPath);
       }
     }
 

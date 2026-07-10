@@ -37,6 +37,7 @@ export async function requestTeamNumber(): Promise<number> {
 export class Preferences implements IPreferences {
   public static readonly preferenceFileName: string = 'wpilib_preferences.json';
   public static readonly wpilibPreferencesFolder: string = '.wpilib';
+  public static readonly pyprojectFileName: string = 'pyproject.toml';
 
   // Create for a specific workspace
   public static async Create(workspace: vscode.WorkspaceFolder): Promise<Preferences> {
@@ -55,7 +56,9 @@ export class Preferences implements IPreferences {
   private preferencesFile?: vscode.Uri;
   private preferencesJson: IPreferencesJson = defaultPreferences;
   private configFileWatcher: vscode.FileSystemWatcher;
+  private pyFileWatcher: vscode.FileSystemWatcher;
   private readonly preferencesGlob: string = '**/' + Preferences.preferenceFileName;
+  private readonly pyprojectGlob: string = '**/' + Preferences.pyprojectFileName;
   private disposables: vscode.Disposable[] = [];
   private isRobotPyProject: boolean = false;
   private isWPILibProject: boolean = false;
@@ -85,6 +88,23 @@ export class Preferences implements IPreferences {
     this.configFileWatcher.onDidChange(async () => {
       await this.updatePreferences();
     });
+
+    const py = new vscode.RelativePattern(workspace, this.pyprojectGlob);
+
+    this.pyFileWatcher = vscode.workspace.createFileSystemWatcher(py);
+    this.disposables.push(this.pyFileWatcher);
+
+    this.pyFileWatcher.onDidCreate(async () => {
+      await vscode.commands.executeCommand('setContext', 'isRobotPyProject', true);
+      this.isRobotPyProject = true;
+    });
+
+    this.pyFileWatcher.onDidDelete(async () => {
+      await vscode.commands.executeCommand('setContext', 'isRobotPyProject', false);
+      this.isRobotPyProject = false;
+    });
+
+    this.pyFileWatcher.onDidChange(async () => {});
   }
 
   public getIsRobotPyProject(): boolean {

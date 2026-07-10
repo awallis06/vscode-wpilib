@@ -149,9 +149,10 @@ export class DependencyViewProvider implements vscode.WebviewViewProvider {
       console.log(item.name.concat(' / ', item.version))
     );
 
-    if (prefs.getIsRobotPyProject())
-      webviewView.webview.html = this._getPythonHtmlForWebview(webviewView.webview);
-    else webviewView.webview.html = this._getHtmlForWebview(webviewView.webview);
+    webviewView.webview.html = this._getHtmlForWebview(
+      webviewView.webview,
+      prefs.getIsRobotPyProject()
+    );
 
     webviewView.webview.onDidReceiveMessage((data) => {
       if (this.isJSMessage(data)) {
@@ -878,7 +879,7 @@ export class DependencyViewProvider implements vscode.WebviewViewProvider {
     );
   }
 
-  private _getPythonHtmlForWebview(webview: vscode.Webview): string {
+  private _getHtmlForWebview(webview: vscode.Webview, python: boolean): string {
     // Get the local path to main script run in the webview, then convert it to a uri we can use in the webview.
     const createUri = (fp: string) => {
       return webview.asWebviewUri(vscode.Uri.joinPath(this._extensionUri, ...fp.split('/')));
@@ -888,6 +889,10 @@ export class DependencyViewProvider implements vscode.WebviewViewProvider {
     const styleUri = createUri(`resources/media/main.css`);
     const vscodeElementsUri = createUri(`resources/media/vscode-elements.css`);
     const codiconUri = createUri(`resources/media/icons.css`);
+    let helpText = 'JSON URL';
+    if (python) helpText = 'Python Package Name';
+    let installText = 'URL';
+    if (python) installText = 'package name';
 
     // Return the complete HTML
     return `
@@ -923,99 +928,14 @@ export class DependencyViewProvider implements vscode.WebviewViewProvider {
           </summary>
           <div class="url-install-section">
             <div class="url-input-container">
-              <input type="text" id="url-input" class="vscode-textfield" placeholder="Enter vendordep URL..." />
+              <input type="text" id="url-input" class="vscode-textfield" placeholder="Enter vendordep ${installText}..." />
               <button id="install-url-action" class="vscode-button">
                 <i class="codicon codicon-cloud-download"></i>
                 Install
               </button>
             </div>
             <div class="url-help-text">
-              Enter a vendor dependency Python Package name to install a library not listed in the available dependencies.
-            </div>
-          </div>
-        </details>
-
-        <details class="vscode-collapsible always-show-actions" open>
-          <summary>
-            <i class="codicon codicon-chevron-right icon-arrow"></i>
-            <h2 class="title">
-              Installed Dependencies
-            </h2>
-            <div class="actions" id="installed-actions"></div>
-          </summary>
-          <div id="installed-dependencies"></div>
-        </details>
-
-        <details class="vscode-collapsible always-show-actions" open>
-          <summary>
-            <i class="codicon codicon-chevron-right icon-arrow"></i>
-            <h2 class="title">
-              Available Dependencies
-            </h2>
-            <div class="actions" id="available-actions"></div>
-          </summary>
-          <div id="available-dependencies"></div>
-        </details>
-
-        <script src="${scriptUri}"></script>
-      </body>
-    </html>
-  `;
-  }
-
-  private _getHtmlForWebview(webview: vscode.Webview): string {
-    // Get the local path to main script run in the webview, then convert it to a uri we can use in the webview.
-    const createUri = (fp: string) => {
-      return webview.asWebviewUri(vscode.Uri.joinPath(this._extensionUri, ...fp.split('/')));
-    };
-
-    const scriptUri = createUri(`resources/media/main.js`);
-    const styleUri = createUri(`resources/media/main.css`);
-    const vscodeElementsUri = createUri(`resources/media/vscode-elements.css`);
-    const codiconUri = createUri(`resources/media/icons.css`);
-
-    // Return the complete HTML
-    return `
-    <!DOCTYPE html>
-    <html lang="en">
-      <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>WPILib Vendor Dependencies</title>
-        <link rel="preload" href="${vscodeElementsUri}" as="style">
-        <link rel="preload" href="${styleUri}" as="style">
-        <link rel="preload" href="${codiconUri}" as="style">
-        <link rel="preload" href="${scriptUri}" as="script">
-
-        <link rel="stylesheet" href="${vscodeElementsUri}">
-        <link rel="stylesheet" href="${styleUri}">
-        <link rel="stylesheet" href="${codiconUri}" id="vscode-codicon-stylesheet">
-      </head>
-      <body>
-        <div class="top-line">
-          <button id="updateall-action" class="vscode-button block">
-            <i class="codicon codicon-sync"></i>
-            Update All Dependencies
-          </button>
-        </div>
-
-        <details class="vscode-collapsible">
-          <summary>
-            <i class="codicon codicon-chevron-right icon-arrow"></i>
-            <h2 class="title">
-              Install from URL
-            </h2>
-          </summary>
-          <div class="url-install-section">
-            <div class="url-input-container">
-              <input type="text" id="url-input" class="vscode-textfield" placeholder="Enter vendordep URL..." />
-              <button id="install-url-action" class="vscode-button">
-                <i class="codicon codicon-cloud-download"></i>
-                Install
-              </button>
-            </div>
-            <div class="url-help-text">
-              Enter a vendor dependency JSON URL to install a library not listed in the available dependencies.
+              Enter a vendor dependency ${helpText} to install a library not listed in the available dependencies.
             </div>
           </div>
         </details>
