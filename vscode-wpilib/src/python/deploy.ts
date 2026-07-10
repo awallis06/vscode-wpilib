@@ -25,7 +25,7 @@ class DeployCodeDeployer implements ICodeDeployer {
     _: vscode.Uri | undefined,
     ...args: string[]
   ): Promise<boolean> {
-    let command = 'deploy ' + args.join(' ');
+    const command = 'deploy ' + args.join(' ');
     const prefs = this.preferences.getPreferences(workspace);
 
     if (!prefs.getTeamNumber()) {

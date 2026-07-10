@@ -415,7 +415,7 @@ export class DependencyViewProvider implements vscode.WebviewViewProvider {
           modal: true,
         }
       );
-      let result = await this.vendorLibraries.installPythonDependency([url], this.wp);
+      const result = await this.vendorLibraries.installPythonDependency([url], this.wp);
       if (!result) {
         logger.warn('Unable to install python package');
       }
@@ -624,7 +624,7 @@ export class DependencyViewProvider implements vscode.WebviewViewProvider {
         for (const id of this.installedPythonDeps) {
           let installedVersion = await getRobotPyVersion(this.wp.uri.fsPath);
           if (!isComponent(id)) {
-            let req = await this.vendorLibraries.getIRequires(id, this.wp);
+            const req = await this.vendorLibraries.getIRequires(id, this.wp);
             if (req) {
               if (req.version) installedVersion = req.version;
               else installedVersion = '';
@@ -660,7 +660,7 @@ export class DependencyViewProvider implements vscode.WebviewViewProvider {
               });
             }
           } else if (isComponent(id)) {
-            let versionList = [{ version: installedVersion, buttonText: i18n('ui', 'To Latest') }];
+            const versionList = [{ version: installedVersion, buttonText: i18n('ui', 'To Latest') }];
             //Because this is a component, the version is tied to the version of robotpy, so there is no need for version drop-downs
             this.installedList.push({
               name: id,
@@ -816,7 +816,7 @@ export class DependencyViewProvider implements vscode.WebviewViewProvider {
         }
       }
     });
-    let req = await this.vendorLibraries.getPythonRequirements();
+    const req = await this.vendorLibraries.getPythonRequirements();
     req.forEach((requirement) => {
       const depList: IJsonList = {
         path: i18n('ui', ''),

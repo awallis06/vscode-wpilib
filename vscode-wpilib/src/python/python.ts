@@ -39,10 +39,10 @@ export async function activatePython(context: vscode.ExtensionContext, coreExpor
   }
 
   if (wp && preferences.getPreferences(wp).getIsRobotPyProject()) {
-    let cmd = 'uv pip list | findstr robotpy';
+    const cmd = 'uv pip list | findstr robotpy';
     let robotpyInstalled = false;
     try {
-      let result = cp.execSync(cmd, { encoding: 'utf8' });
+      const result = cp.execSync(cmd, { encoding: 'utf8' });
       if (result.indexOf('robotpy') !== -1) {
         robotpyInstalled = true;
       }

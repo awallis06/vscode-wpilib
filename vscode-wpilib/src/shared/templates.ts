@@ -27,8 +27,8 @@ export async function registerProjectTemplates(
   language: string,
   core: IExampleTemplateAPI
 ) {
-  let templatesFolder = path.join(resourceRoot, 'src', 'templates');
-  let templatesTestFolder = path.join(resourceRoot, 'src', 'templates_test');
+  const templatesFolder = path.join(resourceRoot, 'src', 'templates');
+  const templatesTestFolder = path.join(resourceRoot, 'src', 'templates_test');
   const resourceFile = path.join(templatesFolder, exampleResourceName);
   const gradleBasePath = path.join(path.dirname(resourceRoot), 'gradle');
   try {

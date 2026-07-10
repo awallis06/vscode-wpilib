@@ -123,7 +123,7 @@ export async function updateRobotPyVersion(
   try {
     let file = await readFile(pyprojectPath, 'utf-8');
     const versionString = 'robotpy_version = ';
-    file = file.replace(versionString, versionString + '\"' + robotpyVersion + '\"');
+    file = file.replace(versionString, versionString + '"' + robotpyVersion + '"');
     await writeFile(pyprojectPath, file, 'utf8');
     return true;
   } catch (err) {
@@ -133,7 +133,7 @@ export async function updateRobotPyVersion(
 }
 
 export async function setupComponents(vendors: string[], toFolder: string) {
-  let components: string[] = [];
+  const components: string[] = [];
   for (const v of vendors) {
     if (v === 'commandsv2') components.push(ComponentPackages.COMMANDSV2);
     else if (v === 'apriltag') components.push(ComponentPackages.APRILTAG);

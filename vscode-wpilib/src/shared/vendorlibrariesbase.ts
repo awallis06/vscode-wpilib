@@ -134,7 +134,7 @@ export async function installNewRequirement(
         workspace
       );
     if (n === 0) {
-      let versions = getVersions(pkg, workspace.uri.fsPath);
+      const versions = getVersions(pkg, workspace.uri.fsPath);
       let installedVersion = await getInstalledVersion(pkg, workspace.uri.fsPath);
       if (!installedVersion) installedVersion = versions[0]; //get the installed version or the latest available version
       return { name: pkg, specifier: '~=', version: installedVersion, availableVersions: versions };
@@ -201,11 +201,11 @@ export async function addPythonDep(
 
 export async function updateRobotPyVersion(ver: string, workspace: string) {
   let f = await readFile(path.join(workspace, 'pyproject.toml'), 'utf8');
-  let robotPy = await getPyProjectFile(workspace);
+  const robotPy = await getPyProjectFile(workspace);
   if (robotPy?.tool.robotpy && robotPy.tool.robotpy.robotpy_version !== ver) {
-    let robotPyIndex = f.indexOf('robotpy_version');
-    let robotPyLength = ('robotpy_version = ""' + robotPy.tool.robotpy.robotpy_version).length;
-    let replace = f.substring(robotPyIndex, robotPyLength + robotPyIndex);
+    const robotPyIndex = f.indexOf('robotpy_version');
+    const robotPyLength = ('robotpy_version = ""' + robotPy.tool.robotpy.robotpy_version).length;
+    const replace = f.substring(robotPyIndex, robotPyLength + robotPyIndex);
     f = f.replace(replace, `robotpy_version = "${ver}"`);
     await writeFile(path.join(workspace, 'pyproject.toml'), f);
   }
@@ -215,12 +215,12 @@ export async function updateVersion(req: IRequires, workspace: string): Promise<
   try {
     if (req.version) {
       const dir = path.join(workspace, 'pyproject.toml');
-      let file = await readFile(dir, 'utf8');
-      let toReplace = file.indexOf(req.name);
+      const file = await readFile(dir, 'utf8');
+      const toReplace = file.indexOf(req.name);
       const robotpy = await getPyProjectFile(workspace);
       if (robotpy?.tool.robotpy.requires) {
         let oldReq = '';
-        for (const r of robotpy?.tool.robotpy.requires) {
+        for (const r of robotpy.tool.robotpy.requires) {
           if (r.name === req.name) {
             if (r.version && r.specifier) {
               oldReq = r.name + r.specifier + r.version;
@@ -268,7 +268,7 @@ export async function removePythonDep(
   try {
     const dir = path.join(workspace, 'pyproject.toml');
     let file = await readFile(dir, 'utf8');
-    let pyproject = (await getPyProjectFile(workspace)) as IPyProject;
+    const pyproject = (await getPyProjectFile(workspace)) as IPyProject;
     const installedComponents = await getComponents(workspace);
     const installedRequirements = pyproject.tool.robotpy.requires;
     for (const c of components) {
@@ -278,7 +278,7 @@ export async function removePythonDep(
     }
     for (const r of requires) {
       for (let i = 0; i < installedRequirements.length; i++) {
-        let reqDep = installedRequirements[i];
+        const reqDep = installedRequirements[i];
         let iString = reqDep.name;
         if (reqDep.specifier) iString += reqDep.specifier + reqDep.version;
         if (reqDep.name === r.name) {
@@ -298,11 +298,11 @@ export async function removePythonDep(
 
 export async function getPyProjectFile(workspace: string): Promise<IPyProject | undefined> {
   try {
-    let f = await readFile(path.join(workspace, 'pyproject.toml'), 'utf-8');
-    let project = TOML.parse(f) as unknown as IPyProject;
-    let requires = project.tool.robotpy.requires.toLocaleString();
+    const f = await readFile(path.join(workspace, 'pyproject.toml'), 'utf-8');
+    const project = TOML.parse(f) as unknown as IPyProject;
+    const requires = project.tool.robotpy.requires.toLocaleString();
     const regexp = /[a-z -]+(?=[=><!~*]{1,2})[><!~*=]{1,2}(?<=[><!~*=]{1})\d[\d . a-z]+/g;
-    let req = requires.match(regexp) as string[];
+    const req = requires.match(regexp) as string[];
     const ret: IRequires[] = [];
     if (req) {
       for (const s of req) {
@@ -319,29 +319,29 @@ export async function getPyProjectFile(workspace: string): Promise<IPyProject | 
 
 export async function parseRequirement(requires: string): Promise<IRequires> {
   let nameExp = /[a-z -]+(?=[=><!~*]{1,2})/;
-  let specifierExp = /[><!~*=]{1,2}/g;
-  let versionExp = /(?<=[><!~*=]{1})[\d . a-z]+/;
+  const specifierExp = /[><!~*=]{1,2}/g;
+  const versionExp = /(?<=[><!~*=]{1})[\d . a-z]+/;
   if (requires.match(specifierExp)) {
-    let n = requires.match(nameExp)?.toString() as string;
-    let s = requires.match(specifierExp)?.toString() as string;
-    let v = requires.match(versionExp)?.toString() as string;
+    const n = requires.match(nameExp)?.toString() as string;
+    const s = requires.match(specifierExp)?.toString() as string;
+    const v = requires.match(versionExp)?.toString() as string;
     return { name: n, specifier: s, version: v, availableVersions: [] };
   }
   nameExp = /[a-z -]+/;
-  let n = requires.match(nameExp)?.toString() as string;
+  const n = requires.match(nameExp)?.toString() as string;
   return { name: n, availableVersions: [] };
 }
 
 export async function getComponents(workspace: string) {
-  let components = (await getPyProjectFile(workspace))?.tool.robotpy.components as string[];
+  const components = (await getPyProjectFile(workspace))?.tool.robotpy.components as string[];
   return components;
 }
 
 export async function getVendorPackageNames(workspace: string) {
   const ret: string[] = [];
-  let projectFile = await getPyProjectFile(workspace);
+  const projectFile = await getPyProjectFile(workspace);
   if (!projectFile) return ret;
-  let rawRequires = projectFile.tool.robotpy.requires;
+  const rawRequires = projectFile.tool.robotpy.requires;
   for (const r of rawRequires) {
     ret.push(r.name);
   }
@@ -350,9 +350,9 @@ export async function getVendorPackageNames(workspace: string) {
 
 export async function getPythonDeps(workspace: string): Promise<string[]> {
   try {
-    let file = await getPyProjectFile(workspace);
+    const file = await getPyProjectFile(workspace);
     if (file) {
-      let ret: string[] = file.tool.robotpy.components;
+      const ret: string[] = file.tool.robotpy.components;
       ret.push(...(await getVendorPackageNames(workspace)));
       return ret;
     } else {
@@ -380,11 +380,10 @@ export async function getInstalledVersion(
         return r.version;
       }
     }
-    let cmd = 'uv pip show ' + pkg;
+    const cmd = 'uv pip show ' + pkg;
     const out = cp.execSync(cmd, { cwd: workspace, encoding: 'utf8' });
     const match: RegExpMatchArray | null = out.match(regexp);
-    let version = match?.toString().substring(9);
-    if (match) return version;
+    if (match) return match.toString().substring(9);
     return undefined;
   } catch {
     logger.log('Error getting installed version');
@@ -394,16 +393,15 @@ export async function getInstalledVersion(
 
 export function getVersions(pkg: string, workspace: string): string[] {
   try {
-    let cmd = 'uvx pip index versions ' + pkg;
-    //if(getIsWindows()) cmd = 'py -3 -m ' + cmd;
-    let year = getWPILibYear().substring(0, 4);
-    let currentVersions = cp.execSync(cmd, { cwd: workspace, encoding: 'utf8' });
-    let regexp = /\d[^,\r\n]+(?=,)/g;
-    let notPre = currentVersions.match(regexp) as string[];
-    let pre = cp
+    const cmd = 'uvx pip index versions ' + pkg;
+    const year = getWPILibYear().substring(0, 4);
+    const currentVersions = cp.execSync(cmd, { cwd: workspace, encoding: 'utf8' });
+    const regexp = /\d[^,\r\n]+(?=,)/g;
+    const notPre = currentVersions.match(regexp) as string[];
+    const pre = cp
       .execSync(cmd + ' --pre', { cwd: workspace, encoding: 'utf8' })
       .match(regexp) as string[];
-    let match: string[] = [];
+    const match: string[] = [];
     for (const p of pre) {
       for (const c of notPre) {
         if (p === c && c.indexOf(year) !== -1) {

@@ -27,8 +27,8 @@ export async function registerExamples(
   language: string,
   core: IExampleTemplateAPI
 ) {
-  let examplesFolder = path.join(resourceRoot, 'src', 'examples');
-  let examplesTestFolder = path.join(resourceRoot, 'src', 'examples_test');
+  const examplesFolder = path.join(resourceRoot, 'src', 'examples');
+  const examplesTestFolder = path.join(resourceRoot, 'src', 'examples_test');
   const resourceFile = path.join(examplesFolder, exampleResourceName);
   const gradleBasePath = path.join(path.dirname(resourceRoot), 'gradle');
   try {
@@ -58,7 +58,7 @@ export async function registerExamples(
             if (e.hasunittests) {
               testFolder = path.join(examplesTestFolder, e.foldername);
             }
-            if (language == 'java') {
+            if (language === 'java') {
               const mainJavaFile = path.join(resourceRoot, 'src', 'Main.java');
               if (
                 !(await generateCopyJava(
@@ -79,7 +79,7 @@ export async function registerExamples(
                 );
                 return false;
               }
-            } else if (language == 'cpp') {
+            } else if (language === 'cpp') {
               if (
                 !(await generateCopyCpp(
                   resourceRoot,

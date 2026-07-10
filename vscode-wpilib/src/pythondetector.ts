@@ -27,7 +27,7 @@ export async function getRobotPyVersion(wp?: string): Promise<string> {
       const out1 = cp.execSync('uv ' + cmd, { cwd: wp, encoding: 'utf8' });
       const match1: RegExpMatchArray | null = out1.match(regexp);
       if (match1) {
-        let v = match1.toLocaleString().substring(9);
+        const v = match1.toLocaleString().substring(9);
         await updateRobotPyVersion(v, wp);
         return v;
       }
@@ -60,7 +60,7 @@ export async function setupVenv(
       cmd = `uv venv --python ${pyVer} --allow-existing --seed --offline`;
       num = await executeApi.executeCommand(cmd, 'Set Up Venv Offline', wp.uri.fsPath, wp);
     }
-    let robotpyver = await getRobotPyVersion(wp.uri.fsPath);
+    const robotpyver = await getRobotPyVersion(wp.uri.fsPath);
     if (robotpyver === 'version undefined') cmd = 'uv pip install robotpy --prerelease=allow';
     else cmd = `uv pip install robotpy==${robotpyver} --prerelease=allow`;
     let n = await executeApi.executeCommand(cmd, 'Install RobotPy', wp.uri.fsPath, wp);

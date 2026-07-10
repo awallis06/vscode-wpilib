@@ -371,7 +371,7 @@ export class Gradle2025Import extends WebViewBase {
     parsed.teamNumber = parseInt(data.teamNumber, 10);
     await writeFile(jsonFilePath, JSON.stringify(parsed, null, 4));
 
-    let replacementFile = path.join(resourceRoot, `${language}_replacements.json`);
+    const replacementFile = path.join(resourceRoot, `${language}_replacements.json`);
     await ImportUpdate(toFolder, replacementFile);
 
     await promptForProjectOpen(vscode.Uri.file(toFolder));

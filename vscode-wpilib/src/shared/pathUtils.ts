@@ -75,7 +75,7 @@ export async function copyComponets(components: string[], targetDir: string) {
         toAdd += '\n\t#  "' + a + '",';
       }
     }
-    let toReplace = new RegExp(`(${'components = ['})([\\s\\S]*?)(${']'})`, 'g');
+    const toReplace = new RegExp(`(${'components = ['})([\\s\\S]*?)(${']'})`, 'g');
     file = file.replace(toReplace, toAdd + '\n]');
     await writeFile(dir, file);
   } catch {

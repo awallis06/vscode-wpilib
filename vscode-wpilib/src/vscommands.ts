@@ -352,7 +352,7 @@ export function createVsCommands(context: vscode.ExtensionContext, externalApi: 
 
   context.subscriptions.push(
     vscode.commands.registerCommand('wpilibcore.downloadPythonForSystemcore', async () => {
-      let cmd = 'installer download-python';
+      const cmd = 'installer download-python';
       const preferencesApi = externalApi.getPreferencesAPI();
       const workspaceFolder = await preferencesApi.getFirstOrSelectedWorkspace();
       const executeApi = externalApi.getExecuteAPI();
@@ -368,7 +368,7 @@ export function createVsCommands(context: vscode.ExtensionContext, externalApi: 
   );
   context.subscriptions.push(
     vscode.commands.registerCommand('wpilibcore.installPythonForSystemcore', async () => {
-      let cmd = 'installer install-python';
+      const cmd = 'installer install-python';
       const preferencesApi = externalApi.getPreferencesAPI();
       const workspaceFolder = await preferencesApi.getFirstOrSelectedWorkspace();
       const executeApi = externalApi.getExecuteAPI();

@@ -161,13 +161,11 @@ export class VendorLibraries {
   }
 
   public async getCurrentlyInstalledPythonLibraries(workspace: vscode.WorkspaceFolder) {
-    // let components = await getComponents(workspace.uri.fsPath);
-    // let requirements = await getVendorPackageNames(workspace.uri.fsPath);
     return await getPythonDeps(workspace.uri.fsPath);
   }
 
   public async getPythonRequirements() {
-    let ret: string[] = [];
+    const ret: string[] = [];
     for (const r of this.requirements) {
       ret.push(r.name);
     }
@@ -263,7 +261,7 @@ export class VendorLibraries {
 
   public async syncRequirements(workspace: vscode.WorkspaceFolder): Promise<void> {
     if (this.requirements.length <= 0) return;
-    let pipList = cp.execSync('uv pip list', { cwd: workspace.uri.fsPath, encoding: 'utf8' });
+    const pipList = cp.execSync('uv pip list', { cwd: workspace.uri.fsPath, encoding: 'utf8' });
     const installedReqs: IRequires[] = [];
     const remove: IRequires[] = [];
     for (const r of this.requirements) {
@@ -286,7 +284,7 @@ export class VendorLibraries {
     if (!installed) {
       let validPackage: IRequires | undefined;
       if (version) {
-        let v = version.indexOf(' (prerelease)');
+        const v = version.indexOf(' (prerelease)');
         if (getWPILibYear().indexOf(version.substring(0, 4)) === -1) {
           const res = await vscode.window.showInformationMessage(
             i18n(
@@ -320,8 +318,8 @@ export class VendorLibraries {
         }
       } else validPackage = await installNewRequirement(pkg, workspace, this.executeApi);
       if (!validPackage) return undefined;
-      let req = validPackage;
-      let versions = validPackage.availableVersions;
+      const req = validPackage;
+      const versions = validPackage.availableVersions;
       let installedVersion = validPackage.version;
       for (const v of versions) {
         if (
@@ -379,11 +377,11 @@ export class VendorLibraries {
   }
 
   public async addRequirements(pkgs: string[], workspace: string) {
-    let ret: IRequires[] = [];
+    const ret: IRequires[] = [];
     for (const pkg of pkgs) {
-      let req = await parseRequirement(pkg);
-      let versions = getVersions(pkg, workspace);
-      let installedVersion = await getInstalledVersion(pkg, workspace);
+      const req = await parseRequirement(pkg);
+      const versions = getVersions(pkg, workspace);
+      const installedVersion = await getInstalledVersion(pkg, workspace);
       if (installedVersion) req.version = installedVersion;
       req.availableVersions = versions;
       this.requirements.push(req);
@@ -399,7 +397,7 @@ export class VendorLibraries {
   ): Promise<IRequires | undefined> {
     await this.syncRequirements(workspace);
     if (version) {
-      let pkgReq = await parseRequirement(pkg);
+      const pkgReq = await parseRequirement(pkg);
 
       for (const r of this.requirements) {
         if (r.name === pkgReq.name) {
@@ -407,7 +405,7 @@ export class VendorLibraries {
           if (r.availableVersions) {
             for (const v of r.availableVersions) {
               if (v === pkgReq.version) {
-                let req = await this.updateVersion(r, pkgReq.version, workspace);
+                const req = await this.updateVersion(r, pkgReq.version, workspace);
                 if (req) return req;
               }
             }
@@ -415,13 +413,13 @@ export class VendorLibraries {
         }
       }
     }
-    let pkgName = (await parseRequirement(pkg)).name;
+    const pkgName = (await parseRequirement(pkg)).name;
     for (const r of this.requirements) {
       if (r.name === pkgName) {
         return r;
       }
     }
-    let addedReq = await this.addRequirement(pkg, workspace);
+    const addedReq = await this.addRequirement(pkg, workspace);
     if (addedReq) return addedReq;
     return undefined;
   }
@@ -430,11 +428,11 @@ export class VendorLibraries {
     pkg: string[],
     workspace: vscode.WorkspaceFolder
   ): Promise<boolean> {
-    let succeed = false;
+    const succeed = false;
     if (pkg.length > 0) {
       const components = await getComponents(workspace.uri.fsPath);
-      let removeComponents: string[] = [];
-      let removeRequires: IRequires[] = [];
+      const removeComponents: string[] = [];
+      const removeRequires: IRequires[] = [];
       for (const p of pkg) {
         let removed = false;
         for (const c of components) {
@@ -445,8 +443,8 @@ export class VendorLibraries {
           }
         }
         if (!removed) {
-          let req = await parseRequirement(p);
-          let toRemove = await this.getIRequires(req.name, workspace, req.version);
+          const req = await parseRequirement(p);
+          const toRemove = await this.getIRequires(req.name, workspace, req.version);
           if (toRemove) removeRequires.push(toRemove);
         }
       }
@@ -461,14 +459,14 @@ export class VendorLibraries {
   ): Promise<boolean> {
     try {
       if (deps.length > 0) {
-        let requires: IRequires[] = [];
-        let components: string[] = [];
+        const requires: IRequires[] = [];
+        const components: string[] = [];
         for (const d of deps) {
           if (isComponent(d)) {
             components.push(d);
           } else {
-            let req = await parseRequirement(d);
-            let toPush = await this.getIRequires(req.name, workspace, req.version);
+            const req = await parseRequirement(d);
+            const toPush = await this.getIRequires(req.name, workspace, req.version);
             if (toPush) requires.push(toPush);
           }
         }
@@ -602,9 +600,9 @@ export class VendorLibraries {
       const availableUpdates: LibraryQuickPickPy[] = [];
       for (const d of installedDeps) {
         if (!isComponent(d)) {
-          let req = await this.getIRequires(d, workspace);
+          const req = await this.getIRequires(d, workspace);
           if (req) {
-            let versions = getVersions(req.name, workspace.uri.fsPath);
+            const versions = getVersions(req.name, workspace.uri.fsPath);
             if (!req.version)
               req.version = (await getInstalledVersion(req.name, workspace.uri.fsPath)) as string;
             for (let i = versions.length - 1; i >= 0; i--) {
@@ -745,8 +743,8 @@ export class VendorLibraries {
             i18n('ui', 'No')
           );
           if (res === i18n('ui', 'Yes')) {
-            let cmd = `uv pip install "${packageFile}" --offline --prerelease=allow`;
-            let num = await this.externalApi
+            const cmd = `uv pip install "${packageFile}" --offline --prerelease=allow`;
+            const num = await this.externalApi
               .getExecuteAPI()
               .executeCommand(
                 cmd,
@@ -759,8 +757,8 @@ export class VendorLibraries {
             }
           }
         } else {
-          let cmd = `uv pip install "${packageFile}" --offline --prerelease=allow`;
-          let num = await this.externalApi
+          const cmd = `uv pip install "${packageFile}" --offline --prerelease=allow`;
+          const num = await this.externalApi
             .getExecuteAPI()
             .executeCommand(cmd, 'Offline Install Python Package', workspace.uri.fsPath, workspace);
           if (num === 0) {
