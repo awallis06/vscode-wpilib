@@ -660,7 +660,9 @@ export class DependencyViewProvider implements vscode.WebviewViewProvider {
               });
             }
           } else if (isComponent(id)) {
-            const versionList = [{ version: installedVersion, buttonText: i18n('ui', 'To Latest') }];
+            const versionList = [
+              { version: installedVersion, buttonText: i18n('ui', 'To Latest') },
+            ];
             //Because this is a component, the version is tied to the version of robotpy, so there is no need for version drop-downs
             this.installedList.push({
               name: id,
