@@ -49,13 +49,10 @@ function navigateToStep(step: number) {
   if (step === 2) {
     // Reset language dropdown to default state if needed
     const languageSelect = document.getElementById('language-select') as HTMLSelectElement;
-    if (languageSelect.selectedIndex !== 0) {
+    if (languageSelect.selectedIndex <= 0) {
       languageSelect.selectedIndex = 0;
       language = '';
     }
-
-    // Reset base dropdown
-    resetBaseDropdown();
   }
 
   // Update summary when navigating to the final step
@@ -326,7 +323,12 @@ function setupEventListeners() {
     }
   });
 
-  document.getElementById('back-to-step-1')!.addEventListener('click', () => navigateToStep(1));
+  document.getElementById('back-to-step-1')!.addEventListener('click', () => {
+    const languageSelect = document.getElementById('language-select') as HTMLSelectElement;
+    languageSelect.selectedIndex = 0;
+    resetBaseDropdown();
+    navigateToStep(1);
+  });
   document.getElementById('next-to-step-3')!.addEventListener('click', () => {
     if (validateStep2()) {
       navigateToStep(3);
