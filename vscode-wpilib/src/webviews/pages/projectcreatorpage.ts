@@ -169,6 +169,9 @@ function selectProjectType(type: ProjectType) {
   }
 
   // Reset language and base since they depend on project type
+  const lanagageSelect = document.getElementById('language-select') as HTMLSelectElement;
+  lanagageSelect.selectedIndex = 0;
+  resetBaseDropdown();
   language = '';
   base = '';
 
@@ -323,12 +326,7 @@ function setupEventListeners() {
     }
   });
 
-  document.getElementById('back-to-step-1')!.addEventListener('click', () => {
-    const languageSelect = document.getElementById('language-select') as HTMLSelectElement;
-    languageSelect.selectedIndex = 0;
-    resetBaseDropdown();
-    navigateToStep(1);
-  });
+  document.getElementById('back-to-step-1')!.addEventListener('click', () => navigateToStep(1));
   document.getElementById('next-to-step-3')!.addEventListener('click', () => {
     if (validateStep2()) {
       navigateToStep(3);
