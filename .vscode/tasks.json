@@ -17,6 +17,16 @@
         "isDefault": true
       },
       "problemMatcher": []
+    },
+    {
+      "type": "typescript",
+      "tsconfig": "vscode-wpilib/tsconfig.json",
+      "option": "watch",
+      "problemMatcher": [
+        "$tsc-watch"
+      ],
+      "group": "build",
+      "label": "tsc: watch - vscode-wpilib/tsconfig.json"
     }
   ]
 }

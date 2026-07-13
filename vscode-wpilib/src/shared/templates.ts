@@ -1,6 +1,6 @@
 'use strict';
 import { readFile } from 'fs/promises';
-import * as jsonc from 'jsonc-parser';
+import * as toml from 'toml';
 import * as path from 'path';
 import * as vscode from 'vscode';
 import { IExampleTemplateAPI, IExampleTemplateCreator } from '../api';
@@ -8,7 +8,11 @@ import { logger } from '../logger';
 import { localize as i18n } from '../locale';
 import { generateCopyCpp, generateCopyJava } from './generator';
 
-export interface ITemplateJsonLayout {
+export interface ITemplateToml {
+  templates: ITemplateTomlLayout[];
+}
+
+export interface ITemplateTomlLayout {
   name: string;
   description: string;
   tags: string[];
@@ -20,7 +24,7 @@ export interface ITemplateJsonLayout {
   hasunittests?: boolean;
 }
 
-const exampleResourceName = 'templates.json';
+const exampleResourceName = 'templates.toml';
 
 export async function registerProjectTemplates(
   resourceRoot: string,
@@ -33,8 +37,8 @@ export async function registerProjectTemplates(
   const gradleBasePath = path.join(path.dirname(resourceRoot), 'gradle');
   try {
     const data = await readFile(resourceFile, 'utf8');
-    const templates: ITemplateJsonLayout[] = jsonc.parse(data) as ITemplateJsonLayout[];
-    for (const e of templates) {
+    const templates: ITemplateToml = toml.parse(data) as ITemplateToml;
+    for (const e of templates.templates) {
       const vendordeps: string[] = e.extravendordeps ?? [];
       const commandVersion: string = e.commandversion ? e.commandversion.toString() : '2';
       if (commandVersion === '3') {
